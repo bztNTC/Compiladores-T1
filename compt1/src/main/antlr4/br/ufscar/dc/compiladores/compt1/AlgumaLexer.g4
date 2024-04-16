@@ -1,78 +1,15 @@
 lexer grammar AlgumaLexer;
 
-ALGORITMO: 'algoritmo'; 
+PALAVRAS_CHAVES: 
+    'algoritmo' | 'declare' | 'literal' | 'inteiro' | 'leia' | 'escreva' | 'tipo' | 'funcao' | 'fim_funcao' | 'retorne' | 'fim_algoritmo' 
+    | 'real' | 'logico' | 'var' | 'constante' | 'falso' | 'verdadeiro' | 'caso' | 'seja' | 'fim_caso' | 'se' | 'entao' | 'senao' | 'fim_se' 
+    | 'para' | 'ate' | 'faca' | 'fim_para' | 'enquanto' | 'fim_enquanto' | 'registro' | 'fim_registro' | 'procedimento' | 'fim_procedimento';
 
-DECLARE: 'declare';
+OPERADORES_LOGICOS: 'e' | 'ou' | 'nao';
 
-LITERAL: 'literal';
+OPERADORES_ARITMETICOS: '/' | '+' | '*' | '%' | '-';
 
-INTEIRO: 'inteiro';
-
-LEIA: 'leia';
-
-ESCREVA: 'escreva';
-
-TYPE: 'tipo';
-
-FUNCTION: 'funcao';
-
-END_FUNCTION: 'fim_funcao';
-
-RETURN: 'retorne';
-
-FIM_ALGORITMO: 'fim_algoritmo';
-
-REAL: 'real';
-
-LOGICO: 'logico';
-
-VAR: 'var';
-
-CONST: 'constante';
-
-FALSE: 'falso';
-
-TRUE: 'verdadeiro';
-
-SWITCH: 'caso'; 
-
-SEJA: 'seja';
-
-END_SWITCH: 'fim_caso';
-
-AND: 'e';
-
-OR: 'ou';
-
-NOT: 'nao';
-
-IF: 'se';
-
-IF_TRUE: 'entao';
-
-ELSE: 'senao';
-
-END_IF: 'fim_se';
-
-FOR: 'para';
-
-UNTIL: 'ate';
-
-DO: 'faca';
-
-END_FOR: 'fim_para';
-
-WHILE: 'enquanto';
-
-END_WHILE: 'fim_enquanto';
-
-RECORD: 'registro';
-
-END_RECORD: 'fim_registro';
-
-PROCEDURE: 'procedimento';
-
-END_PROCEDURE: 'fim_procedimento';
+OPERADORES_RELACIONAIS: '<' | '=' | '<>' | '<=' | '>=' | '>';
 
 NUM_INT: ('+')? ('0'..'9')+;
 
@@ -92,41 +29,25 @@ FECHA_COL: ']';
 
 VIRG: ',';
 
-DIVISAO: '/';
-
-SOMA: '+';
-
-MULTIPLICACAO: '*';
-
-MOD: '%';
-
-SUBTRACAO: '-';
-
 ATRIBUICAO: '<-';
 
-MENOR: '<';
+PONTEIRO: '^';
 
-IGUAL: '=';
-
-DIFERENTE: '<>';
-
-MENOR_IGUAL: '<=';
-
-MAIOR_IGUAL: '>=';
-
-MAIOR: '>';
-
-VETOR_DEC: '^';
-
-VETOR_ATRI: '&';
+ENDERECO: '&';
 
 DOT: '.';
 
 ATE: '..';
 
-CADEIA: '"' ~('"')* '"';
-
-COMENTARIO: '{' ~[\r\n]* '}' -> skip;
-
 WS: ( ' ' | '\t' | '\r' | '\n' ) -> skip;
+
+CADEIA: '"' (~('\n' | '\r' | '"'))* '"';
+
+CADEIA_SEM_FIM : '"' (~('\n' | '\r' | '"'))* ('\n' | '\r');
+
+COMENTARIO: '{' (~('\n'|'\r'|'}'))* '}' -> skip;
+
+COMENTARIO_SEM_FIM : '{' (~('\n'|'\r'|'}'))* ('\n'|'\r');
+
+CARACTER_INVALIDO : .;
 

@@ -2,6 +2,7 @@ package br.ufscar.dc.compiladores.compt1;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.FileNotFoundException;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
@@ -9,27 +10,46 @@ import org.antlr.v4.runtime.Token;
 public class Principal {
 
     public static void main(String[] args) {
-        if (args.length < 2) {
-            System.err.println("Usage: java -jar seu-analisador.jar arquivo-entrada arquivo-saida");
-            System.exit(1);
-        }
-
-        String arquivoEntrada = args[0];
-        String arquivoSaida = args[1];
-
         try {
-            // args[0] é o primeiro argumento da linha de comando
+            String arquivoSaida = args[1];
             CharStream cs = CharStreams.fromFileName(args[0]);
-            AlgumaLexer lex = new AlgumaLexer(cs);
-
             try (PrintWriter pw = new PrintWriter(arquivoSaida)) {
-                Token t = null;
+                AlgumaLexer lex = new AlgumaLexer(cs); 
+                Token t = null; 
+                
                 while ((t = lex.nextToken()).getType() != Token.EOF) {
-                    pw.println("<'" + t.getText() + "'," + AlgumaLexer.VOCABULARY.getDisplayName(t.getType()) + ">");
+                    String nomeToken = AlgumaLexer.VOCABULARY.getDisplayName(t.getType());
+
+                    switch (nomeToken) {
+                        case "CARACTER_INVALIDO":
+                            pw.println("Linha " + t.getLine() + ": " + t.getText() + " - simbolo nao identificado");
+                            break;
+                        case "CADEIA_SEM_FIM":
+                            pw.println("Linha " + t.getLine() + ": cadeia literal nao fechada");
+                            break;
+                        case "COMENTARIO_SEM_FIM":
+                            pw.println("Linha " + t.getLine() + ": comentario nao fechado");
+                            break;
+                        case "PALAVRAS_CHAVES":
+                        case "OPERADORES_LOGICOS":
+                        case "OPERADORES_ARITMETICOS":
+                        case "OPERADORES_RELACIONAIS":
+                            pw.println("<'" + t.getText() + "','" + t.getText() + "'>");
+                            break;
+                        default:
+                            pw.println("<'" + t.getText() + "'," + nomeToken + ">");
+                            break;
+                    }
+                    if (nomeToken.equals("CARACTER_INVALIDO") || nomeToken.equals("CADEIA_SEM_FIM") || nomeToken.equals("COMENTARIO_SEM_FIM")) {
+                        break;
+                    }
                 }
+            }catch(FileNotFoundException ex) { 
+                System.err.println("O arquivo/diretório não existe:"+args[1]);
             }
-        } catch (IOException ex) {
-            System.err.println("Erro ao ler o arquivo de entrada: " + ex.getMessage());
+        } catch (IOException errado) { 
+            errado.printStackTrace();
         }
     }
 }
+
